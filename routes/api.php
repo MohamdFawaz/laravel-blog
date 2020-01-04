@@ -13,6 +13,44 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/user','API\A');
+
+
+ // Stats routes...
+    Route::get('/stats', 'StatsController@index');
+    Route::get('/test', 'StatsController@index');
+    Route::get('/stats/{id}', 'StatsController@show');
+
+    // Post routes...
+    Route::group(['prefix' => 'posts', 'namespace' => 'API'],function (){
+        Route::get('/', 'PostController@index');
+        Route::get('/topic/{topic_slug}', 'PostController@indexByTopic');
+        Route::get('/{id?}', 'PostController@show');
+        Route::post('/{id}', 'PostController@store');
+        Route::delete('/{id}', 'PostController@destroy');
+    });
+
+//    // Media routes...
+//    Route::post('/media/uploads', 'MediaController');
+//
+//    // Tag routes...
+//    Route::get('/tags', 'TagController@index');
+//    Route::get('/tags/{id?}', 'TagController@show');
+//    Route::post('/tags/{id}', 'TagController@store');
+//    Route::delete('/tags/{id}', 'TagController@destroy');
+//
+    // Topic routes...
+    Route::group(['prefix' => 'topics', 'namespace' => 'API'],function () {
+        Route::get('/', 'TopicController@index');
+        Route::get('/{id?}', 'TopicController@show');
+        Route::post('/{id}', 'TopicController@store');
+        Route::delete('/{id}', 'TopicController@destroy');
+    });
+
+Route::group(['middleware' => ['cors','api'], 'prefix' => 'auth'], function () {
+    Route::post('login', 'API\AuthController@login');
+    Route::post('logout', 'API\AuthController@logout');
+    Route::post('refresh', 'API\AuthController@refresh');
+    Route::post('me', 'API\AuthController@me');
+
 });
