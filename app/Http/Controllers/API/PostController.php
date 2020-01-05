@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use Canvas\Post;
+use App\Post;
 use Canvas\Tag;
 use Canvas\Topic;
 use Exception;
@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
-use function MongoDB\BSON\toPHP;
 
 class PostController extends Controller
 {
@@ -22,7 +21,7 @@ class PostController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Post::orderByDesc('created_at')->with('topic')
+        return response()->json(Post::orderByDesc('created_at')->with('topic','comments')
             ->get());
     }
 

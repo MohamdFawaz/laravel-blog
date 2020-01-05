@@ -17,9 +17,8 @@ use Illuminate\Http\Request;
 
 
  // Stats routes...
-    Route::get('/stats', 'StatsController@index');
-    Route::get('/test', 'StatsController@index');
-    Route::get('/stats/{id}', 'StatsController@show');
+//    Route::get('/comment', 'CommentController@index');
+//    Route::get('/post/{post_id}/comments', 'CommentController@getPostComments');
 
     // Post routes...
     Route::group(['prefix' => 'posts', 'namespace' => 'API'],function (){
@@ -47,10 +46,15 @@ use Illuminate\Http\Request;
         Route::delete('/{id}', 'TopicController@destroy');
     });
 
-Route::group(['middleware' => ['cors','api'], 'prefix' => 'auth'], function () {
-    Route::post('login', 'API\AuthController@login');
-    Route::post('logout', 'API\AuthController@logout');
-    Route::post('refresh', 'API\AuthController@refresh');
-    Route::post('me', 'API\AuthController@me');
+Route::group(['middleware' => ['cors','api']], function () {
+
+    Route::post('/submit', 'API\CommentController@submitComment');
+
+    Route::group(['prefix' => 'auth'], function (){
+        Route::post('login', 'API\AuthController@login');
+        Route::post('logout', 'API\AuthController@logout');
+        Route::post('refresh', 'API\AuthController@refresh');
+        Route::post('me', 'API\AuthController@me');
+    });
 
 });
