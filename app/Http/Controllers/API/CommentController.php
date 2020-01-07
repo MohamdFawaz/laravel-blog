@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Comment;
+use App\Models\Comment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

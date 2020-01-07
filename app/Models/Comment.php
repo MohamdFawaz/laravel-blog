@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Canvas\Post;
 use Illuminate\Database\Eloquent\Model;

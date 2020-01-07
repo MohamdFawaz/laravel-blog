@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Post;
+use App\Models\Post;
 use Canvas\Tag;
 use Canvas\Topic;
 use Exception;
@@ -14,6 +14,12 @@ use Ramsey\Uuid\Uuid;
 
 class PostController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api',['only' => 'store','destroy']);
+    }
+
     /**
      * Get all the posts.
      *
@@ -84,6 +90,7 @@ class PostController extends Controller
      */
     public function store(string $id): JsonResponse
     {
+
         $data = [
             'id'                     => request('id'),
             'slug'                   => request('slug'),
