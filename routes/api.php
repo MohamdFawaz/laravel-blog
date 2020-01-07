@@ -28,7 +28,7 @@ Route::group(['middleware' => ['cors','api']], function () {
     });
 
     // Comment routes...
-    Route::post('/submit', 'API\CommentController@submitComment');
+    Route::post('/comment/submit', 'API\CommentController@submitComment');
 
     Route::group(['prefix' => 'auth'], function (){
         Route::post('login', 'API\AuthController@login');
