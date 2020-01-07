@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function submitComment(Request $request){
         $comment = Comment::create([
             'body' => $request->body,
@@ -19,6 +25,6 @@ class CommentController extends Controller
     }
 
     public function index(){
-        return response()->json(Comment::orderByDesc('created_at')->get());
+        return response()->json(Comment::get());
     }
 }

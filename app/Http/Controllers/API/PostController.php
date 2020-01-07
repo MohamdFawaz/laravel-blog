@@ -103,7 +103,6 @@ class PostController extends Controller
                 'canonical_link'      => request('meta.canonical_link', null),
             ],
         ];
-
         $messages = [
             'required' => __('canvas::validation.required'),
             'unique'   => __('canvas::validation.unique'),
@@ -117,9 +116,7 @@ class PostController extends Controller
                 Rule::unique('canvas_posts', 'slug')->ignore($id),
             ],
         ], $messages)->validate();
-
-        $post = $id !== 'create' ? Post::forCurrentUser()->find($id) : new Post(['id' => request('id')]);
-
+        $post = new Post();
         $post->fill($data);
         $post->meta = $data['meta'];
         $post->save();
@@ -127,11 +124,11 @@ class PostController extends Controller
         $post->topic()->sync(
             $this->syncTopic(request('topic'))
         );
-
-        $post->tags()->sync(
-            $this->syncTags(request('tags'))
-        );
-
+        if (request('tags')) {
+            $post->tags()->sync(
+                $this->syncTags(request('tags'))
+            );
+        }
         return response()->json($post->refresh());
     }
 
@@ -144,11 +141,10 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         $post = Post::find($id);
-
         if ($post) {
             $post->delete();
 
-            return response()->json([], 204);
+            return response()->json(['isDeleted' => true], 204);
         }
     }
 
@@ -166,22 +162,15 @@ class PostController extends Controller
     /**
      * Attach or create a topic given an incoming array.
      *
-     * @param array $incomingTopic
+     * @param string $incomingTopicSlug
      * @return array
      * @throws Exception
      */
-    private function syncTopic(array $incomingTopic): array
+    private function syncTopic($incomingTopicSlug): array
     {
-        if ($incomingTopic) {
-            $topic = Topic::where('slug', $incomingTopic['slug'])->first();
+        if ($incomingTopicSlug) {
+            $topic = Topic::where('slug', $incomingTopicSlug)->first();
 
-            if (! $topic) {
-                $topic = Topic::create([
-                    'id'   => $id = Uuid::uuid4(),
-                    'name' => $incomingTopic['name'],
-                    'slug' => $incomingTopic['slug'],
-                ]);
-            }
 
             return collect((string) $topic->id)->toArray();
         } else {
